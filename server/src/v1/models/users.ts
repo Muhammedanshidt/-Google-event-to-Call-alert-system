@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
   refreshToken: String,
   is_active: { type: Boolean, default: true },
   lastNotifiedEventId: { type: String, default: null },
+  lastCallSid: { type: String, default: null },
+  lastCallStatus: {  type: String,  default: null }
 
 
 }, { timestamps: true });

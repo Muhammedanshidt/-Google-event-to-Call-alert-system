@@ -14,13 +14,14 @@ export const startCalendarCron = () => {
       try {
         const events = await getUpcomingEvents(user);
 
-        console.log("after event ")
-
         if (events.length === 0) continue;
 
         const event = events[0];
+        console.log(event)
+        console.log("after event in ")
 
         // Prevent duplicate calls
+
         if (user.lastNotifiedEventId === event.id) continue;
 
         console.log("📞 Calling", user.email, "for", event.summary);
@@ -28,7 +29,7 @@ export const startCalendarCron = () => {
         await callUserWithEvent(user, event);
 
         console.log("after the call")
-        
+
         user.lastNotifiedEventId = event.id;
         await user.save();
       } catch (err) {
