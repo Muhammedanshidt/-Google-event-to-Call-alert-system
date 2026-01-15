@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
   accessToken: String,
   refreshToken: String,
   is_active: { type: Boolean, default: true },
-  lastNotifiedEventId: { type: String, default: null }
+  lastNotifiedEventId: { type: String, default: null },
+
 
 }, { timestamps: true });
 

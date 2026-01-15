@@ -12,6 +12,8 @@ authRouter.get("/google",googleAuth);
 authRouter.get("/google/callback", googleCallback);
 authRouter.get("/me", authenticate, getMe);
 authRouter.put("/phone", authenticate, updatePhone);
+
+
 // authRouter.get('/token', createAccessToken);
 
 

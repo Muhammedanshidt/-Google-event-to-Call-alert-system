@@ -21,9 +21,9 @@ export default function Home() {
 
           </a>
 
-          <p className="text-xs text-gray-400">
+          {/* <p className="text-xs text-gray-400">
             Secure Google OAuth • No passwords stored
-          </p>
+          </p> */}
         </div>
       </div>
     </div>

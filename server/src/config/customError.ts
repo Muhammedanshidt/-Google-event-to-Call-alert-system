@@ -2,25 +2,25 @@ import type { IResponse } from "../common-interfaces/response";
 import httpStatus from "http-status-codes";
 
 
-export class InternalError {
-  statusCode: number;
-  message: string;
-  data: any;
+// export class InternalError {
+//   statusCode: number;
+//   message: string;
+//   data: any;
 
-  constructor(
-    message: string = httpStatus.getStatusText(httpStatus.INTERNAL_SERVER_ERROR),
-    statusCode: number = httpStatus.INTERNAL_SERVER_ERROR,
-    data?: any
-  ) {
-    this.message = message;
-    this.statusCode = statusCode;
+//   constructor(
+//     message: string = httpStatus.getStatusText(httpStatus.INTERNAL_SERVER_ERROR),
+//     statusCode: number = httpStatus.INTERNAL_SERVER_ERROR,
+//     data?: any
+//   ) {
+//     this.message = message;
+//     this.statusCode = statusCode;
 
-    this.data = data ?? {
-      message: this.message,
-      statusCode: this.statusCode,
-    };
-  }
-}
+//     this.data = data ?? {
+//       message: this.message,
+//       statusCode: this.statusCode,
+//     };
+//   }
+// }
 
 
 const customError = (

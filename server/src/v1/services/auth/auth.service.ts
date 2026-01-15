@@ -20,16 +20,6 @@ interface IGoogleAuth {
   } = process.env;
 
 
-
-  // export const initiateAuth = async () => {
-  //   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile`;
-  //   return {
-  //     message: "success",
-  //     data: url,
-  //   };
-  // };
-
-
   export const initiateAuth = async () => {
     const url =
       `https://accounts.google.com/o/oauth2/v2/auth` +
@@ -41,6 +31,19 @@ interface IGoogleAuth {
       `&scope=${encodeURIComponent(
         "openid email profile https://www.googleapis.com/auth/calendar.readonly"
       )}`;
+
+
+      // const url = `https://accounts.google.com/o/oauth2/v2/auth`+
+      // `?client_id=${CLIENT_ID}`+
+      // `&redirect_uri=${REDIRECT_URI}`+
+      // `&response_type=code`+
+      // `&access_type=offline`+
+      // `&prompt=consent`+
+      // `&scope=openid email https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile`
+      // ;
+      
+
+
   
     return {
       message: "success",
@@ -49,96 +52,10 @@ interface IGoogleAuth {
   };
   
 
-  // export const callbackUrl = async (code: any) => {
-    
-  // console.log("after initail auth")
-  //   try {
-  //     const { data } = await axios.post("https://oauth2.googleapis.com/token", {
-  //       client_id: CLIENT_ID,
-  //       client_secret: CLIENT_SECRET,
-  //       code,
-  //       redirect_uri: REDIRECT_URI,
-  //       grant_type: "authorization_code",
-  //     });
-      
-  //     const { access_token, refresh_token, expires_in } = data;
-      
-  //     const { data: profile } = await axios.get(
-  //       "https://www.googleapis.com/oauth2/v1/userinfo",
-  //       {
-  //         headers: { Authorization: `Bearer ${access_token}` },
-  //       }
-  //     );
-  
-  //     const { name, email, verified_email, picture } = profile;
-  //     if (!verified_email) throw new CustomError("Email not verified", 404);
-  //     let user = await User.findOne({ email });
-    
-  //     if (!user) {
-  //       user = await User.create({
-  //         email,
-  //         name,
-  //         avatar: picture,
-  //         is_active: true,
-  //       });
-  //     } else {
-  //       // Update user info if they already exist
-  //       user.name = name;
-  //       user.avatar = picture;
-  //       await user.save();
-  //     }
-
-
-  //     if (!user.email) {
-  //       throw new CustomError("User email missing", 500);
-  //     }
-      
-
-  //     const payload = {
-  //       id: user._id,
-  //       email: user.email,      
-  //       is_active: user.is_active ?? true,
-  //     };
-      
-
-  //     const refreshToken = await generateRefreshToken(payload);
-  //     const accessToken = await generateAccessToken(payload);
-
-  //     // Check if user has phone number
-  //     const needsPhone = !user.phoneNumber;
-  //     const redirectUrl = needsPhone 
-  //       ? "http://localhost:3000/phone" 
-  //       : "http://localhost:3000/dashboard";
-  
-  //     return {
-  //       statusCode: 302,
-  //       message: "success",
-  //       cookies: [
-  //         {
-  //           name: "accessToken",
-  //           value: accessToken,
-  //           options: { maxAge: 15 * 60 * 1000, httpOnly: true, sameSite: 'lax' },
-  //         },
-  //         {
-  //           name: "refreshToken",
-  //           value: refreshToken,
-  //           options: { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'lax' },
-  //         },
-  //       ],
-  //       redirect: redirectUrl,
-  //     };
-  //   } catch (error) {
-  //     return {
-  //       statusCode: 302,
-  //       message: "failed",
-  //       redirect: "http://localhost:3000/login",
-  //     };
-  //   }
-  // };
 
   export const callbackUrl = async (code: string) => {
     try {
-      // 1️⃣ Exchange code for Google tokens
+  
       const tokenRes = await axios.post("https://oauth2.googleapis.com/token", {
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
@@ -148,8 +65,7 @@ interface IGoogleAuth {
       });
   
       const { access_token, refresh_token } = tokenRes.data;
-  
-      // 2️⃣ Get Google profile
+
       const profileRes = await axios.get(
         "https://www.googleapis.com/oauth2/v1/userinfo",
         {
@@ -160,8 +76,8 @@ interface IGoogleAuth {
       const { name, email, verified_email, picture, id } = profileRes.data;
   
       if (!verified_email) throw new CustomError("Email not verified", 400);
-  
-      // 3️⃣ Find or create user
+ 
+      
       let user = await User.findOne({ email });
   
       if (!user) {
@@ -175,10 +91,8 @@ interface IGoogleAuth {
           refreshToken: refresh_token
         });
       } else {
-        // Update tokens
         user.accessToken = access_token;
   
-        // Google sends refresh token only on first login
         if (refresh_token) {
           user.refreshToken = refresh_token;
         }
@@ -189,7 +103,6 @@ interface IGoogleAuth {
         await user.save();
       }
   
-      // 4️⃣ Generate your JWT tokens
       const payload = {
         id: user._id,
         email: user.email!,
@@ -232,21 +145,6 @@ interface IGoogleAuth {
     }
   };
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   export const getMe = async (userId: string) => {
     try {

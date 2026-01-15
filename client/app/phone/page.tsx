@@ -90,7 +90,6 @@ export default function PhonePage() {
       return `+${digits.slice(0, 12)}`; 
     }
   
-    // While typing
     return digits;
   };
   
